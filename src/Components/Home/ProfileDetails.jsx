@@ -1,42 +1,153 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Css/style.css";
 
 const ProfileDetails = () => {
+  const [inputData, setInputData] = useState({
+    firstname: "",
+    middlename: "",
+    lastname: "",
+    email: "",
+    phonenumber: "",
+  }); //initializing data storage
+  const [allData, setAllData] = useState([]); //storing Datas in this as array
+  const [error, setError] = useState({
+    firstname: "",
+    middlename: "",
+    lastname: "",
+    email: "",
+    phonenumber: "",
+  });
+
+  //tracking each input field and store thir value in their respective
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setInputData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  //submit button is clicked
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    //checking for errors in phonenumber
+    if (inputData.phonenumber === "") {
+      setError((prevError) => ({
+        ...prevError,
+        phonenumber: "Phone number must not be empty",
+      }));
+      return;
+    } else if (inputData.phonenumber.length !== 10) {
+      setError((prevError) => ({
+        ...prevError,
+        phonenumber: "Phone number must be 10 digits",
+      }));
+      return;
+    }
+
+    if (inputData.email === "") {
+      setError((prevError) => ({
+        ...prevError,
+        email: "Enter only alphabets",
+      }));
+      console.log("yes");
+      return;
+    }
+
+    //checing for errors in firstname
+    // if (inputData.firstname.length !== 10) {
+    //   setError((prevError) => ({
+    //     ...prevError,
+    //     firstname: "Enter only alphabets",
+    //   }));
+    //   console.log("yes");
+    //   return;
+    // }
+    console.log(inputData);
+    setAllData((prevData) => [...prevData, inputData]);
+    setInputData({
+      firstname: "",
+      middlename: "",
+      lastname: "",
+      email: "",
+      phonenumber: "",
+    });
+    setError({
+      firstname: "",
+      middlename: "",
+      lastname: "",
+      email: "",
+      phonenumber: "",
+    });
+    console.log(allData);
+  };
+
   return (
     <div
       className="flex justify-center items-center p-3"
       style={{ minHeight: "100vh" }}
     >
       <div className="max-w-5xl w-full">
-        <form className="flex flex-col gap-3 w-full">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3 w-full">
           <div className="flex flex-col gap-3 sm:items-center sm:flex-row">
-            <input
-              type="text"
-              placeholder="First name"
-              className="flex-1 border-2 border-blue-500 rounded-md p-2 outline-none"
-            />
-            <input
-              type="text"
-              placeholder="Middle name"
-              className="flex-1 border-2 border-blue-500 rounded-md p-2 outline-none"
-            />
-            <input
-              type="text"
-              placeholder="Last name"
-              className="flex-1 border-2 border-blue-500 rounded-md p-2 outline-none"
-            />
+            <div className="flex-1 flex flex-col gap-1">
+              <input
+                type="text"
+                name="firstname"
+                value={inputData.firstname}
+                placeholder="First name"
+                className="border-2 border-blue-500 rounded-md p-2 outline-none"
+                onChange={handleChange}
+              />
+              <p className="text-red-600 text-sm">{error.firstname}</p>
+            </div>
+            <div className="flex-1 flex flex-col gap-1">
+              <input
+                type="text"
+                name="middlename"
+                value={inputData.middlename}
+                placeholder="Middle name"
+                className="border-2 border-blue-500 rounded-md p-2 outline-none"
+                onChange={handleChange}
+              />
+              <p className="text-red-600 text-sm">{error.middlename}</p>
+            </div>
+            <div className="flex-1 flex flex-col gap-1">
+              <input
+                type="text"
+                name="lastname"
+                value={inputData.lastname}
+                placeholder="Last name"
+                className="border-2 border-blue-500 rounded-md p-2 outline-none"
+                onChange={handleChange}
+              />
+              <p className="text-red-600 text-sm">{error.lastname}</p>
+            </div>
           </div>
           <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full">
-            <input
-              type="email"
-              placeholder="example@gmail.com"
-              className="flex-1 border-2 border-blue-500 rounded-md p-2 outline-none"
-            />
-            <input
-              type="number"
-              placeholder="Phone number"
-              className="flex-1 border-2 border-blue-500 rounded-md p-2 outline-none"
-            />
+            <div className="flex-1 flex flex-col gap-1">
+              <input
+                type="email"
+                name="email"
+                value={inputData.email}
+                placeholder="example@gmail.com"
+                className="border-2 border-blue-500 rounded-md p-2 outline-none"
+                onChange={handleChange}
+              />
+              <p className="text-red-600 text-sm">{error.email}</p>
+            </div>
+            <div className="flex-1 flex flex-col gap-1">
+              <input
+                type="number"
+                name="phonenumber"
+                value={inputData.phonenumber}
+                placeholder="Phone number"
+                className="border-2 border-blue-500 rounded-md p-2 outline-none"
+                onChange={handleChange}
+              />
+              <p className="text-red-600 text-sm">{error.phonenumber}</p>
+            </div>
           </div>
           <button
             type="submit"
@@ -57,13 +168,20 @@ const ProfileDetails = () => {
               </tr>
             </thead>
             <tbody>
-              <tr className="bg-blue-300">
-                <td className="px-4 py-2">hi</td>
-                <td className="px-4 py-2">hi</td>
-                <td className="px-4 py-2">hi</td>
-                <td className="px-4 py-2">hi</td>
-                <td className="px-4 py-2">hi</td>
-              </tr>
+              {allData.map((data, index) => (
+                <tr
+                  className={`${
+                    index % 2 === 0 ? "bg-blue-300" : "bg-gray-300"
+                  }`}
+                  key={index}
+                >
+                  <td className="px-4 py-2">{data.firstname}</td>
+                  <td className="px-4 py-2">{data.middlename}</td>
+                  <td className="px-4 py-2">{data.lastname}</td>
+                  <td className="px-4 py-2">{data.email}</td>
+                  <td className="px-4 py-2">{data.phonenumber}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

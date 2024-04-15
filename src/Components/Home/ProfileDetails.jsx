@@ -9,14 +9,10 @@ const ProfileDetails = () => {
     email: "",
     phonenumber: "",
   }); //initializing data storage
-  const [allData, setAllData] = useState([]); //storing Datas in this as array
-  const [error, setError] = useState({
-    firstname: "",
-    middlename: "",
-    lastname: "",
-    email: "",
-    phonenumber: "",
-  });
+  const [allData, setAllData] = useState([]); //storing Data in this as array
+  const [phoneError, setPhoneError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [formError, setFormError] = useState(false);
 
   //tracking each input field and store thir value in their respective
   const handleChange = (e) => {
@@ -33,54 +29,30 @@ const ProfileDetails = () => {
 
     //checking for errors in phonenumber
     if (inputData.phonenumber === "") {
-      setError((prevError) => ({
-        ...prevError,
-        phonenumber: "Phone number must not be empty",
-      }));
-      return;
+      setPhoneError("Phonenumber should not be empty");
+      setFormError(true);
     } else if (inputData.phonenumber.length !== 10) {
-      setError((prevError) => ({
-        ...prevError,
-        phonenumber: "Phone number must be 10 digits",
-      }));
-      return;
+      setPhoneError("Phone number must be 10 digits");
+      setFormError(true);
     }
 
     if (inputData.email === "") {
-      setError((prevError) => ({
-        ...prevError,
-        email: "Enter only alphabets",
-      }));
-      console.log("yes");
-      return;
+      setEmailError("Email should not be empty");
+      setFormError(true);
     }
 
-    //checing for errors in firstname
-    // if (inputData.firstname.length !== 10) {
-    //   setError((prevError) => ({
-    //     ...prevError,
-    //     firstname: "Enter only alphabets",
-    //   }));
-    //   console.log("yes");
-    //   return;
-    // }
     console.log(inputData);
-    setAllData((prevData) => [...prevData, inputData]);
-    setInputData({
-      firstname: "",
-      middlename: "",
-      lastname: "",
-      email: "",
-      phonenumber: "",
-    });
-    setError({
-      firstname: "",
-      middlename: "",
-      lastname: "",
-      email: "",
-      phonenumber: "",
-    });
-    console.log(allData);
+    if (!formError) {
+      setAllData((prevData) => [...prevData, inputData]);
+      setInputData({
+        firstname: "",
+        middlename: "",
+        lastname: "",
+        email: "",
+        phonenumber: "",
+      });
+      console.log(allData);
+    }
   };
 
   return (
@@ -100,7 +72,7 @@ const ProfileDetails = () => {
                 className="border-2 border-blue-500 rounded-md p-2 outline-none"
                 onChange={handleChange}
               />
-              <p className="text-red-600 text-sm">{error.firstname}</p>
+              <p className="text-red-600 text-sm"></p>
             </div>
             <div className="flex-1 flex flex-col gap-1">
               <input
@@ -111,7 +83,7 @@ const ProfileDetails = () => {
                 className="border-2 border-blue-500 rounded-md p-2 outline-none"
                 onChange={handleChange}
               />
-              <p className="text-red-600 text-sm">{error.middlename}</p>
+              <p className="text-red-600 text-sm"></p>
             </div>
             <div className="flex-1 flex flex-col gap-1">
               <input
@@ -122,7 +94,7 @@ const ProfileDetails = () => {
                 className="border-2 border-blue-500 rounded-md p-2 outline-none"
                 onChange={handleChange}
               />
-              <p className="text-red-600 text-sm">{error.lastname}</p>
+              <p className="text-red-600 text-sm"></p>
             </div>
           </div>
           <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full">
@@ -135,7 +107,7 @@ const ProfileDetails = () => {
                 className="border-2 border-blue-500 rounded-md p-2 outline-none"
                 onChange={handleChange}
               />
-              <p className="text-red-600 text-sm">{error.email}</p>
+              <p className="text-red-600 text-sm">{emailError}</p>
             </div>
             <div className="flex-1 flex flex-col gap-1">
               <input
@@ -146,7 +118,7 @@ const ProfileDetails = () => {
                 className="border-2 border-blue-500 rounded-md p-2 outline-none"
                 onChange={handleChange}
               />
-              <p className="text-red-600 text-sm">{error.phonenumber}</p>
+              <p className="text-red-600 text-sm">{phoneError}</p>
             </div>
           </div>
           <button
@@ -171,7 +143,9 @@ const ProfileDetails = () => {
               {allData.map((data, index) => (
                 <tr
                   className={`${
-                    index % 2 === 0 ? "bg-blue-300" : "bg-gray-300"
+                    allData.length >= 1 && index % 2 === 0
+                      ? "bg-blue-300"
+                      : "bg-gray-300"
                   }`}
                   key={index}
                 >
